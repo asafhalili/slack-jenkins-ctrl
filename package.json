@@ -1,0 +1,16 @@
+{
+  "name": "jenkins-controller",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@slack/bolt": "^1.5.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "jenkins": "^0.27.0",
+    "morgan": "~1.9.0"
+  }
+}
