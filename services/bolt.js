@@ -3,13 +3,12 @@ const { App } = require('@slack/bolt');
 
 const { MSG_TEXTS } = require('../helpers/slack/textUtils');
 
-let app;
+const app = new App({
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
+    token: process.env.SLACK_BOT_TOKEN,
+});
 
 const start = async (port) => {
-    app = new App({
-        signingSecret: process.env.SLACK_SIGNING_SECRET,
-        token: process.env.SLACK_BOT_TOKEN,
-    });
     app.start(port);
     log.info('⚡️ Slack Jenkins CI/CD is running');
 };

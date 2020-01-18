@@ -9,7 +9,10 @@ const PORT = process.env.PORT || 3000;
 
 // Start the app
 jenkins.init();
-start(PORT);
+(async () => {
+    await start(PORT);
+})();
+
 
 // Message Listeners
 addMessageListener(/^(run|build)\s+(\w+)\s*/, async function(context, say) {
