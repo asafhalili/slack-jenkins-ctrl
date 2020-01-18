@@ -10,7 +10,7 @@ const app = new App({
 
 const start = async (port) => {
     app.start(port);
-    log.info('⚡️ Slack Jenkins CI/CD is running');
+    log.info('Slack Jenkins Ctrl started');
 };
 
 const markContextAsHandled = (context) => {

@@ -8,6 +8,16 @@ const buildJob = async (jobName, say) => {
     say(MSG_TEXTS.JOB_STARTED(jobName));
 };
 
+const enableJob = async (jobName, say) => {
+    await jenkins.enableJob(jobName);
+    say(MSG_TEXTS.JOB_ENABLED(jobName));
+};
+
+const disableJob = async (jobName, say) => {
+    await jenkins.disableJob(jobName);
+    say(MSG_TEXTS.JOB_DISABLED(jobName));
+};
+
 const findJobs = async (jobPartialName, say) => {
     say(MSG_TEXTS.SEARCH_JOBS(jobPartialName));
     const jobsInfo = await jenkins.findJobs(jobPartialName);
@@ -48,5 +58,7 @@ module.exports = {
     buildJob,
     getAllJobs,
     findJobs,
-    getJobsInQueue
+    getJobsInQueue,
+    enableJob,
+    disableJob
 };

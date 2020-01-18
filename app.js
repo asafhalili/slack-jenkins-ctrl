@@ -5,7 +5,7 @@ const { start, addMessageListener, addActionListener, addErrorHandler } = requir
 const actions = require('./subscribers/slackActions');
 const messages = require('./subscribers/slackMessages');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.JENKINS_CTRL_PORT || 3000;
 
 // Start the app
 jenkins.init();
@@ -15,12 +15,22 @@ jenkins.init();
 
 
 // Message Listeners
-addMessageListener(/^(run|build)\s+(\w+)\s*/, async function(context, say) {
+addMessageListener(/^(run|build)\s*([\w|\s]*)/, async function(context, say) {
     const jobName = context.matches[2];
     await messages.buildJob(jobName, say);
 });
 
-addMessageListener(/^(find|search)\s*(\w*)/, async function(context, say) {
+addMessageListener(/^(enable)\s*([\w|\s]*)/, async function(context, say) {
+    const jobName = context.matches[2];
+    await messages.enableJob(jobName, say);
+});
+
+addMessageListener(/^(disable)\s*([\w|\s]*)/, async function(context, say) {
+    const jobName = context.matches[2];
+    await messages.disableJob(jobName, say);
+});
+
+addMessageListener(/^(find|search)\s*([\w|\s]*)/, async function(context, say) {
     const jobPartialName = context.matches[2];
     if (!jobPartialName) {
         await messages.getAllJobs(say);
