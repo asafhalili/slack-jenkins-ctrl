@@ -11,7 +11,7 @@ Currently, all the features are messages-based (instead of slack commands based)
 - jobs
 - queue
 
-Detailed explanations & images
+[Detailed explanations, images & Installation Instructions](https://medium.com/@asaf.halili/control-jenkins-from-slack-with-jenkinsctrl-be4339c63008)
 
 ## Usage
 In order to use Jenkins Ctrl, you need to provide few environment variables:
@@ -52,5 +52,6 @@ Run:
 docker run -e JENKINS_URI=http://admin:Aa12345@localhost:8080 -e SLACK_SIGNING_SECRET=<SLACK_SIGNING_SECRET> -e SLACK_BOT_TOKEN=<SLACK_BOT_TOKEN> -p <HOST_PORT>:3000  jenkins-ctrl
 ```
 
+[Detailed explanations, images & Installation Instructions](https://medium.com/@asaf.halili/control-jenkins-from-slack-with-jenkinsctrl-be4339c63008)
 
 
