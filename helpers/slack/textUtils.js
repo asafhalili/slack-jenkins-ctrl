@@ -25,26 +25,38 @@ const JENKINS_COLORS_TO_STATUSES = {
     'red': STATUS_TEXTS.FAILURE
 };
 
-const MSG_TEXTS = {
-    ERROR: 'Oops... Something went wrong :(',
-    JOB_NOT_FOUND: `Hmmm...Couldn't find any job. Maybe you spelled it wrong?`,
-    JOB_STARTED: `Yay! I started the job`,
-    JOB_ENABLED: `Yay! I enabled the job`,
-    JOB_DISABLED: `I disabled the job, no one can run it`,
-    JOB_ABORTED: `I aborted the job`,
-    JOB_STOPPED: `I stopped the job`,
-    JOB_CANCELLED: `The job cancelled and no longer in the queue`,
-    NO_JOBS: 'Hmmm... No jobs at all',
-    NO_JOBS_IN_QUEUE: 'Yay! No jobs waiting in the queue'
+const TITLES = {
+    JOBS: "Jenkins Jobs",
+    JOBS_IN_QUEUE: "Jenkins Jobs Waiting in Queue"
+};
 
-}
+const MSG_TEXTS = {
+    ERROR: jobId => 'Oops... Something went wrong :worried:',
+    JOB_NOT_FOUND: jobId => `:thinking_face: Hmmm...Couldn't find any job that contains '${jobId}'. Maybe you spelled it wrong?`,
+    JOB_STARTED: jobId => `:face_with_cowboy_hat: Yay! I started the job '${jobId}'`,
+    JOB_ENABLED: jobId => `:relaxed: I enabled the job '${jobId}'`,
+    JOB_DISABLED: jobId => `:wink: I disabled the job '${jobId}'`,
+    JOB_ABORTED: jobId => `:boom: I aborted the job '${jobId}'`,
+    JOB_STOPPED: jobId => `:clap: I stopped the job ${jobId}`,
+    JOB_CANCELLED: jobId => `The job with queue id ${jobId} cancelled and no longer in the queue`,
+    NO_JOBS: jobId => 'Hmmm... No jobs at all :worried:',
+    NO_JOBS_IN_QUEUE: jobId => ':bowtie: Yay! No jobs waiting in the queue',
+    SEARCH_JOBS: jobId => `:mag_right: Searching jobs that contains '${jobId}'`
+};
 
 const getLastBuildLink = (jobInfo) => {
     return `<${jobInfo.lastBuild.url}|${jobInfo.lastBuild.number}>`;
 }
 
+const getJobTitle = (jobInfo, withDescription = true) => {
+    if (withDescription && jobInfo.description) {
+        return `*<${jobInfo.url}|${jobInfo.displayName}>*\n${jobInfo.description}`;
+    } else {
+        return `*<${jobInfo.url}|${jobInfo.displayName}>*`;
+    }
+}
+
 const getJobStatusText = (jobInfo) => {
-    console.log('color', jobInfo.color);
     let status;
     if (!JENKINS_COLORS_TO_STATUSES[jobInfo.color]) {
         status = JENKINS_COLORS_TO_STATUSES[STATUS_TEXTS.UNKNOWN](jobInfo);
@@ -59,7 +71,19 @@ const getJobStatusText = (jobInfo) => {
     return status;
 };
 
+const getQueuedJobText = (jobInfo) => {
+    return `<${jobInfo.task.url}|${jobInfo.task.name}>\n${jobInfo.why}`;
+}
+
+const createBoldText = (text) => {
+    return `*${text}*`;
+}
+
 module.exports = {
+    getJobTitle,
     getJobStatusText,
-    MSG_TEXTS
+    createBoldText,
+    getQueuedJobText,
+    MSG_TEXTS,
+    TITLES
 };

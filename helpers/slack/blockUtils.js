@@ -1,5 +1,10 @@
-const { getBuildOrAbortButton, getEnableButton, getEnableOrDisableButton, getCancelBuildInQueueButton } = require('./buttonsUtils');
-const { getJobStatusText } = require('./textsUtils');
+const { getJobTitle, getJobStatusText, getQueuedJobText, createBoldText, TITLES } = require('./textUtils');
+const { getBuildOrAbortButton,
+    getEnableButton,
+    getEnableOrDisableButton,
+    getCancelBuildInQueueButton } = require('./buttonUtils');
+
+const WITHOUT_DESCRIPTION = false;
 
 const createBlocks = (...sections) => {
     return { blocks: sections };
@@ -23,19 +28,24 @@ const createTextSectionWithAccessory = (text, accessory) => {
     return {
         ...createTextSection(text),
         accessory
-    }
+    };
 };
 
 
 const createJobActions = (jobInfo) => {
+    let elements;
+    if (!jobInfo.hasRunningBuild && !jobInfo.buildable) {
+        elements = [getEnableOrDisableButton(jobInfo)];
+    } else {
+        elements = [
+            getBuildOrAbortButton(jobInfo),
+            getEnableOrDisableButton(jobInfo)
+        ];
+    }
+
     return {
-        "type": "actions",
-        "elements": ((!jobInfo.hasRunningJob && !jobInfo.buildable) ?
-            [getEnableOrDisableButton(jobInfo)] :
-            [
-                getBuildOrAbortButton(jobInfo),
-                getEnableOrDisableButton(jobInfo)
-            ])
+        type: "actions",
+        elements
     };
 };
 
@@ -47,18 +57,10 @@ const createJobPrimaryAction = (jobInfo) => {
     }
 };
 
-const getJobTitle = (jobInfo, withDescription = true) => {
-    if (withDescription && jobInfo.description) {
-        return `*<${jobInfo.url}|${jobInfo.displayName}>*\n${jobInfo.description}`;
-    } else {
-        return `*<${jobInfo.url}|${jobInfo.displayName}>*`;
-    }
-}
-
 const createJobBlock = (jobInfo) => {
     return createBlocks(
         createTextSection(getJobTitle(jobInfo)),
-        createTextSection(`*${getJobStatusText(jobInfo)}*`),
+        createTextSection(createBoldText(getJobStatusText(jobInfo))),
         createJobActions(jobInfo)
     );
 };
@@ -66,13 +68,13 @@ const createJobBlock = (jobInfo) => {
 const createJobsBlock = (jobsInfo) => {
     const sections = jobsInfo.map(
         job => createTextSectionWithAccessory(
-            `${getJobTitle(job, false)}\n${getJobStatusText(job)}`,
+            `${getJobTitle(job, WITHOUT_DESCRIPTION)}\n${getJobStatusText(job)}`,
             createJobPrimaryAction(job)
         )
     );
 
     return createBlocks(
-        createTextSection("Jenkins Jobs"),
+        createTextSection(TITLES.JOBS),
         createDivider(),
         ...sections
     );
@@ -81,13 +83,13 @@ const createJobsBlock = (jobsInfo) => {
 const createQueueBlock = (queueInfo) => {
     const sections = queueInfo.map(
         job => createTextSectionWithAccessory(
-            `<${job.task.url}|${job.task.name}>\n${job.why}`,
+            getQueuedJobText(job),
             getCancelBuildInQueueButton(String(job.id))
         )
     );
 
     return createBlocks(
-        createTextSection("Jenkins Jobs Waiting in Queue"),
+        createTextSection(TITLES.JOBS_IN_QUEUE),
         createDivider(),
         ...sections
     );
