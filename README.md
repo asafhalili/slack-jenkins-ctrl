@@ -15,6 +15,7 @@ Detailed explanations & images
 
 ## Usage
 In order to use Jenkins Ctrl, you need to provide few environment variables:
+
 | Environment Variable  | Description | Default value |
 | --------------------  | ----------- | ------------- |
 | JENKINS_URI  | URI in the format: http://username:password@host:port  | No default value |
