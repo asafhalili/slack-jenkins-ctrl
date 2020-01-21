@@ -15,22 +15,22 @@ jenkins.init();
 
 
 // Message Listeners
-addMessageListener(/^(run|build)\s*([\w|\s]*)/, async function(context, say) {
+addMessageListener(/^(run|build)\s+([\w|\s-]*)/, async function(context, say) {
     const jobName = context.matches[2];
     await messages.buildJob(jobName, say);
 });
 
-addMessageListener(/^(enable)\s*([\w|\s]*)/, async function(context, say) {
+addMessageListener(/^(enable)\s*([\w|\s-]*)/, async function(context, say) {
     const jobName = context.matches[2];
     await messages.enableJob(jobName, say);
 });
 
-addMessageListener(/^(disable)\s*([\w|\s]*)/, async function(context, say) {
+addMessageListener(/^(disable)\s*([\w|\s-]*)/, async function(context, say) {
     const jobName = context.matches[2];
     await messages.disableJob(jobName, say);
 });
 
-addMessageListener(/^(find|search)\s*([\w|\s]*)/, async function(context, say) {
+addMessageListener(/^(find|search)\s*([\w|\s-]*)/, async function(context, say) {
     const jobPartialName = context.matches[2];
     if (!jobPartialName) {
         await messages.getAllJobs(say);
@@ -45,6 +45,10 @@ addMessageListener(/^(jobs)$/i, async function(context, say) {
 
 addMessageListener(/^(queue)$/i, async function(context, say) {
     await messages.getJobsInQueue(say);
+});
+
+addMessageListener(/^(running)$/i, async function(context, say) {
+    await messages.getRunningJobs(say);
 });
 
 // Action Listeners

@@ -25,7 +25,7 @@ const init = () => {
 }
 
 const buildJob = async (jobName) => {
-    return await jenkins.job.build(jobName);
+    return await jenkins.job.build({name: jobName, parameters: {}});
 };
 
 const abortJob = async (jobName, jobNumber) => {
@@ -41,13 +41,11 @@ const getJobInfo = async (jobName) => {
 };
 
 const getAllJobs = async () => {
-    const jobs = await jenkins.job.list();
-    return jobs;
+    return await jenkins.job.list();
 };
 
 const getJobsInQueue = async () => {
-    const jobs = await jenkins.queue.list();
-    return jobs;
+    return await jenkins.queue.list();
 };
 
 const findJobs = async (jobPartialName) => {
@@ -69,7 +67,7 @@ const enableJob = async (jobName) => {
 
 const hasRunningBuild = (jobInfo) => {
     return jobInfo.color.includes('anime');
-}
+};
 
 module.exports = {
     init,

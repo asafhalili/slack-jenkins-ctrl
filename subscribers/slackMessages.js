@@ -3,6 +3,8 @@ const slack = require('../helpers/slack/blockUtils');
 
 const { MSG_TEXTS } = require('../helpers/slack/textUtils');
 
+const MAX_NUM_OF_JOBS = 10;
+
 const buildJob = async (jobName, say) => {
     await jenkins.buildJob(jobName);
     say(MSG_TEXTS.JOB_STARTED(jobName));
@@ -31,7 +33,7 @@ const findJobs = async (jobPartialName, say) => {
         const detailedJobsInfo = await Promise.all(
             jobsInfo.map(job => jenkins.getJobInfo(job.name)));
 
-        say(slack.createJobsBlock(detailedJobsInfo));
+        say(slack.createJobsBlock(detailedJobsInfo.slice(0, MAX_NUM_OF_JOBS)));
     }
 };
 
@@ -41,7 +43,19 @@ const getAllJobs = async (say) => {
         say(MSG_TEXTS.NO_JOBS());
     } else {
         const detailedJobsInfo = await Promise.all(jobsInfo.map(job => jenkins.getJobInfo(job.name)));
-        say(slack.createJobsBlock(detailedJobsInfo));
+        say(slack.createJobsBlock(detailedJobsInfo.slice(0, MAX_NUM_OF_JOBS)));
+    }
+};
+
+const getRunningJobs = async (say) => {
+    const jobsInfo = await jenkins.getAllJobs();
+    if (jobsInfo.length == 0) {
+        say(MSG_TEXTS.NO_JOBS());
+    } else {
+        const detailedJobsInfo = await Promise.all(
+            jobsInfo.map(job => jenkins.getJobInfo(job.name)));
+        const runningJobs = detailedJobsInfo.filter(jobInfo => jenkins.hasRunningBuild(jobInfo));
+        say(slack.createJobsBlock(runningJobs.slice(0, MAX_NUM_OF_JOBS)));
     }
 };
 
@@ -59,6 +73,7 @@ module.exports = {
     getAllJobs,
     findJobs,
     getJobsInQueue,
+    getRunningJobs,
     enableJob,
     disableJob
 };

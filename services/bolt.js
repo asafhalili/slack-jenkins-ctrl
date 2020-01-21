@@ -25,7 +25,8 @@ const addErrorHandler = () => {
 
 const handleError = (error, say) => {
     log.error('Unknown error occurred ', error);
-    say(MSG_TEXTS.ERROR());
+    console.log(error);
+    say(MSG_TEXTS.ERROR() + " " + error);
 };
 
 const addMessageListener = (msgRegex, func) => {

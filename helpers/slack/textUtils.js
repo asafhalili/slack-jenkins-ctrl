@@ -26,7 +26,7 @@ const JENKINS_COLORS_TO_STATUSES = {
 };
 
 const TITLES = {
-    JOBS: "Jenkins Jobs",
+    JOBS: "Jenkins Jobs (Showing max of 10 jobs)",
     JOBS_IN_QUEUE: "Jenkins Jobs Waiting in Queue"
 };
 
