@@ -1,7 +1,9 @@
+const xml2js = require('xml2js');
+
 let jenkins;
 
 const buildJenkinsUri = () => {
-    if(process.env.JENKINS_URI){
+    if (process.env.JENKINS_URI) {
         return process.env.JENKINS_URI;
     }
 
@@ -25,17 +27,35 @@ const init = () => {
 }
 
 const buildJob = async (jobName) => {
-    return await jenkins.job.build({name: jobName, parameters: {}});
+    const isParameterized = await isJobParameterized(jobName);
+    if (isParameterized) {
+        return await jenkins.job.build({ name: jobName, parameters: {} });
+    } else {
+        return await jenkins.job.build(jobName);
+    }
 };
 
 const abortJob = async (jobName, jobNumber) => {
     return await jenkins.build.stop(jobName, jobNumber);
 };
 
+const getJobConfig = async (jobName) => {
+    const xml = await jenkins.job.config(jobName);
+    const parser = xml2js.Parser();
+    const jobConfig = await parser.parseStringPromise(xml);
+    return jobConfig;
+};
+
+const isJobParameterized = async (jobName) => {
+    const jobConfig = await getJobConfig(jobName);
+    return !!(jobConfig.project.properties[0]['hudson.model.ParametersDefinitionProperty']);
+};
+
 const getJobInfo = async (jobName) => {
     const jobInfo = await jenkins.job.get(jobName);
     return {
         hasRunningBuild: hasRunningBuild(jobInfo),
+        isParameterized: await isJobParameterized(jobInfo.name),
         ...jobInfo
     };
 };

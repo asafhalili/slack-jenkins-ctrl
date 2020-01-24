@@ -25,7 +25,6 @@ const addErrorHandler = () => {
 
 const handleError = (error, say) => {
     log.error('Unknown error occurred ', error);
-    console.log(error);
     say(MSG_TEXTS.ERROR() + " " + error);
 };
 
